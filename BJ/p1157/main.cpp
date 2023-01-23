@@ -13,6 +13,7 @@ int main() {
 
     cin >> word;
 
+// count # of alphabets
     for(size_t i=0; i<word.size(); i++){
         if(word[i] >= 97){
             alphabets_idx = word[i] - 97;
@@ -21,15 +22,18 @@ int main() {
             alphabets_idx = word[i] - 65;
         }
         alphabets[alphabets_idx]++;
-        // printf("IDX is..... %d %d\n", word[i], alphabets_idx);
+    }
+
+// check most numerous alphabet and its duplication
+    for(int i=0; i<26; i++){
+        if(alphabets[i] > alphabets[max_idx]){
+            max_idx = i;
+
+        }
     }
     for(int i=0; i<26; i++){
-        if(alphabets[i] == alphabets[max_idx]){
-            max_overlap=true;
-        }
-        else if(alphabets[i] > alphabets[max_idx]){
-            max_idx = i;
-            max_overlap=false;
+        if(i != max_idx && alphabets[i] == alphabets[max_idx]){
+            max_overlap = true;
         }
     }
 
