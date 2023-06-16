@@ -16,34 +16,57 @@ int testCnt = 0;
 vector<int> selected;    
 vector<int> unselected;
 vector<bool> visited;
+
 int status[400];
+bool playerStatus[20] = {false, };
 
 
 void calculateSelectedStatus(){
-    for(int i=0; i<n/2; i++){
-        int player1 = selected[i];
-        for(int j=0; j<n/2; j++){
-            int player2 = selected[j];
-            selectedStatus += status[player1 * n + player2];
+    int player1, player2;
+    for(int i=0; i<n; i++){
+        if(playerStatus[i]){
+            player1 = playerStatus[i];
+        }
+        else continue;
+        for(int j=0; j<n; j++){
+            if(playerStatus[i]){
+                player2 = playerStatus[j];
+                selectedStatus += status[player1 * n + player2];
+                }
+            
         }
     }
 }
 
 void calculateUnselecStatus(){
-
+    int player1, player2;
     for(int i=0; i<n; i++){
-        unselected.push_back(i);
-    }
-    for(int i=0; i<n/2; i++){
-        unselected.erase(unselected.begin() + selected[i]);
-    }
-    for(int i=0; i<n/2; i++){
-        int player1 = unselected[i];
-        for(int j=0; j<n/2; j++){
-            int player2 = unselected[j];
-            nonSelecStatus += status[player1 * n + player2];
+        if(!playerStatus[i]){
+            player1 = playerStatus[i];
+        }
+        else continue;
+        for(int j=0; j<n; j++){
+            if(!playerStatus[i]){
+                player2 = playerStatus[j];
+                nonSelecStatus += status[player1 * n + player2];
+                }
+            
         }
     }
+
+    // for(int i=0; i<n; i++){
+    //     unselected.push_back(i);
+    // }
+    // for(int i=0; i<n/2; i++){
+    //     unselected.erase(unselected.begin() + selected[i]);
+    // }
+    // for(int i=0; i<n/2; i++){
+    //     int player1 = unselected[i];
+    //     for(int j=0; j<n/2; j++){
+    //         int player2 = unselected[j];
+    //         nonSelecStatus += status[player1 * n + player2];
+    //     }
+    // }
 }
 
 
@@ -57,11 +80,13 @@ void dfs(int least, int depth){
         //TEST
         testCnt++;
         cout << "!!!!!!!!!!!!!!!!!!!!!!test: " << testCnt << endl;
-        for(int i=0; i<n/2; i++){
-            cout << "THIS IS SELECTED " << selected[i] << endl;
-            cout << "THIS IS UnSELECTED " << unselected[i] << endl;
+        for(int i=0; i<n; i++){
+            if(playerStatus[i]) cout << "THIS IS SELECTED " << playerStatus[i] << endl;
+            else cout << "THIS IS UnSELECTED " << playerStatus[i] << endl;
+
 
         }
+                    cout << selectedStatus << " and.. " << nonSelecStatus << endl;
 
         minDifference = min(minDifference, abs(nonSelecStatus - selectedStatus));
         selectedStatus = 0;
@@ -70,11 +95,11 @@ void dfs(int least, int depth){
     }
     for(int i=least; i<n; i++){
         if(!visited[i]){
-            visited[i] = true;
-            selected.push_back(i);
+            visited.push_back(i);
+            playerStatus[i] = true;
             dfs(least+1, depth+1);
-            selected.pop_back();
-            visited[i] = false;
+            playerStatus[i] = false;
+            visited.pop_back();
         }
     }
 
