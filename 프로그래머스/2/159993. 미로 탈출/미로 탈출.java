@@ -1,93 +1,93 @@
-import java.util.ArrayDeque;
+import java.util.*;
 
 
 class Solution {
-    int N, M, sx, sy, lx, ly, ex, ey;
-    int[] rr = {1, -1, 0, 0};
-    int[] cc = {0, 0, 1, -1};
-	private static class Node{
-		int r, c;
-		public Node(int r, int c){
-			//x좌표
-			this.r = r;
-			//y좌표
-			this.c = c;
-		}
-	}
+    
+    int[] moveY = {-1, 1, 0, 0};    
+    int[] moveX = {0, 0, 1, -1};
+    char[][] mapChar;
+    
+    int mapX, mapY;
+    
+    boolean[][] visited;
+    int[][] dist;
+    
+    public static class Point{
+        int x;
+        int y;
+        public Point(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
     
     public int solution(String[] maps) {
-
-
-        // y개수
-        N = maps.length;
-        // x개수
-        M  = maps[0].length();
-        for(int i=0; i<N; i++){
-            for(int j=0; j<M; j++){
-                if(maps[i].charAt(j) == 'S'){
-                    sy = i;
-                    sx = j;
-                }
-                else if(maps[i].charAt(j) == 'L'){
-                    ly = i;
-                    lx = j;
-                }
-                else if(maps[i].charAt(j) == 'E'){
-                    ey = i;
-                    ex = j;
+        mapY = maps.length;
+        mapX = maps[0].length();
+        
+        Point start=null;
+        Point lever=null;
+        Point end=null;
+        
+        mapChar = new char[mapY][mapX];
+        for(int i=0; i<mapY; i++){
+            mapChar[i] = maps[i].toCharArray();
+            for(int j=0; j<mapX; j++){
+                if(mapChar[i][j] == 'S'){
+                    start = new Point(j, i);
+                } else if(mapChar[i][j] == 'L'){
+                    lever = new Point(j, i);
+                } else if(mapChar[i][j] == 'E'){
+                    end = new Point(j,i);
                 }
             }
         }
-        
-        int[][] dist = new int[N][M];
-        ArrayDeque<Node> q = new ArrayDeque<>();
+        visited = new boolean[mapY][mapX];
+        dist = new int[mapY][mapX];
 
-        // 시작 > 레버 
-        q.addLast(new Node(sx, sy));
-        // dist[sy][sx] = ;
+        int sTol = bfs(start, lever);
         
-        while(!q.isEmpty()){
-            Node now = q.pollFirst();
-            for(int i=0; i<4; i++){
-                int n_x = now.r + rr[i];
-                int n_y = now.c + cc[i];
-                
-                if(n_x < 0 || n_y < 0 || n_x >= M || n_y >= N || maps[n_y].charAt(n_x) == 'X'){
-                    continue;
-                }
-                if(dist[n_y][n_x] == 0){
-                    q.addLast(new Node(n_x, n_y));
-                    dist[n_y][n_x] = dist[now.c][now.r] + 1;
-                }
-                
-            }    
+        for(int i=0; i<mapY; i++){
+            Arrays.fill(visited[i], false);
+            Arrays.fill(dist[i], 0);
         }
-        int sToL = dist[ly][lx];
-        if(sToL == 0) return -1;
         
-        // 레버 > 도착
-        int[][] dist2 = new int[N][M];
+        int lToe = bfs(lever, end);
+        
+        if(sTol == -1 || lToe == -1){
+            return -1;
+        }
+        return sTol + lToe;
 
-        q.addLast(new Node(lx, ly));
-        
-        while(!q.isEmpty()){
-            Node now = q.pollFirst();
-            for(int i=0; i<4; i++){
-                int n_x = now.r + rr[i];
-                int n_y = now.c + cc[i];
-                
-                if(n_x < 0 || n_y < 0 || n_x >= M || n_y >= N || maps[n_y].charAt(n_x) == 'X'){
-                    continue;
-                }
-                if(dist2[n_y][n_x] == 0){
-                    q.addLast(new Node(n_x, n_y));
-                    dist2[n_y][n_x] = dist2[now.c][now.r] + 1;
-                }
-                
-            }    
-        }
+    }
     
-        return dist2[ey][ex] == 0 ? -1 : dist2[ey][ex] + sToL;
+    // bfs -> queue
+    public int bfs(Point start, Point end){
+        ArrayDeque<Point> q = new ArrayDeque<>();
+        visited[start.y][start.x] = true;
+        q.add(start);
         
+        while(!q.isEmpty()){
+            Point now = q.poll();
+            int sx = now.x;
+            int sy = now.y;
+            
+            if(sx == end.x && sy == end.y) return dist[sy][sx];
+            
+            for(int i=0; i<4; i++){
+                int nx = sx + moveX[i];
+                int ny = sy + moveY[i];
+                // 벽이거나 범위를 벗어나거나 이미 방문했으면 아님 
+                if(nx<0 || ny<0 || nx>= mapX || ny>=mapY || mapChar[ny][nx] == 'X' || visited[ny][nx]){
+                    continue;
+                }
+                // 아니면 visited 처리하구 q에 넣기
+                visited[ny][nx] = true;
+                dist[ny][nx] = dist[sy][sx]+1;
+                q.add(new Point(nx, ny));
+            }   
+        }
+        
+        return -1;
     }
 }
