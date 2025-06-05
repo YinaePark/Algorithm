@@ -1,69 +1,55 @@
-import java.util.ArrayList;
-import java.util.ArrayDeque;
-import java.util.Arrays;
+import java.util.*;
 
 
 class Solution {
-    private static ArrayList<Integer>[] adjList;
-    private static boolean[] visited;
-    private static int[] dist;
-        
+    int[] moveX = {0,0,-1,1};
+    int[] moveY = {1,-1,0,0};
+    boolean[][] visited;
+    int[][] dist;
+    int n, m;
+    
+    public class Point{
+        int x, y;
+        public Point(int x, int y){
+            this.x=x;
+            this.y=y;
+        }
+    }
     
     public int solution(int[][] maps) {
-        int n = maps.length;
-        int m = maps[0].length;
-        dist = new int[m*n];
-
-        // 인접리스트 초기화
-        // graphnum = i*5 + j
-        adjList = new ArrayList[n*m];
-        for(int i=0; i<n*m; i++){
-            adjList[i] = new ArrayList<>();
-        }
+        // n y
+        n = maps.length;
+        m = maps[0].length;
+        visited = new boolean[n][m];
+        dist = new int[n][m];
         
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(maps[i][j] == 1){
-                    if(j!=0 && maps[i][j-1] == 1){
-                        adjList[i*m+j].add(i*m+j-1);
-                    }
-                    if(i!=0 && maps[i-1][j] == 1){
-                        adjList[i*m+j].add((i-1)*m+j);
-                    }
-                    if(j!=m-1 && maps[i][j+1] == 1){
-                        adjList[i*m+j].add(i*m+j+1);
-                    }
-                    if(i!=n-1 && maps[i+1][j] == 1){
-                        adjList[i*m+j].add((i+1)*m+j);
-                    }
-                }
-            }
-        }
-        
-        visited = new boolean[n*m];
-        Arrays.fill(dist, -2);
-        
-        bfs(0);
-        return dist[n*m-1]+1;
+        return bfs(maps);
     }
     
-    private static void bfs(int n){
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        visited[n] = true;
-        queue.add(n);
-        dist[n] = 0;
+    public int bfs(int[][] maps){
+        ArrayDeque<Point> q = new ArrayDeque<>();
+        q.add(new Point(0,0));
+        visited[0][0] = true;
+        dist[0][0] = 1;
         
-        while(!queue.isEmpty()){
-            int now = queue.poll();
+        while(!q.isEmpty()){
+            Point now = q.poll();
+            if(now.x == m-1 && now.y == n-1)
+                return dist[now.y][now.x];
             
-            for(int next : adjList[now]){
-                if(!visited[next]){
-                    queue.add(next);
-                    dist[next] = dist[now]+1;
-                    visited[next] = true;
-                }
+            for(int i=0; i<4; i++){
+                int nextX = now.x + moveX[i];
+                int nextY = now.y + moveY[i];
+                if(nextX<0 || nextY<0 || nextX>=m || nextY>=n 
+                   || visited[nextY][nextX] || maps[nextY][nextX] == 0) continue;
+                
+                q.add(new Point(nextX, nextY));
+                visited[nextY][nextX] = true;
+                dist[nextY][nextX] = dist[now.y][now.x] + 1;
             }
         }
+        return -1;
     }
+   
     
 }
