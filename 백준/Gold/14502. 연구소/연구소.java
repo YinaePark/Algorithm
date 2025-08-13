@@ -51,15 +51,11 @@ public class Main {
 		
 	}
 	
-	// 3개 골라서 벽 세우기(백트래킹)
+	// 빈칸 조합 3개 골라서 벽 세우기(백트래킹), 
 	public static void setWall(int depth, ArrayDeque<int[]> q, int[][] map) {
 		if(depth == 3) {
 			ArrayDeque<int[]> qCopy = new ArrayDeque<>(q);
-		    int[][] mapCopy = new int[N][M];
-		    for (int i = 0; i < N; i++) {
-		        System.arraycopy(map[i], 0, mapCopy[i], 0, M);
-		    }
-		    int result = bfs(qCopy, mapCopy);
+		    int result = bfs(qCopy, map);
 		    maxResult = Math.max(maxResult, result);
 			return;
 		} 
@@ -83,15 +79,15 @@ public class Main {
 			for(int i=0; i<4; i++) {
 				int nx = now[0] + moveX[i];
 				int ny = now[1] + moveY[i];
+				// 범위 벗어나거나 방문했거나 벽이면 continue
 				if(nx<0 || ny <0 || nx>= M || ny>= N 
 						|| visited[ny][nx] == true
 						|| map[ny][nx] == 1) {
 					continue;
 				}
+				// map 변경 X !! 
 				if(map[ny][nx] == 0) {
 					cnt--;
-					
-					
 				}
 				visited[ny][nx] = true;
 				q.add(new int[] {nx, ny});
