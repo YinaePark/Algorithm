@@ -4,12 +4,7 @@ import java.io.*;
 
 
 public class Main {
-	/*
-	 * 
-	 * 
-	 * */
 	static int N, K;
-	static String[] arr;
 	static int maxWords = 0;
 	static int[] wordMask;
 	
@@ -29,16 +24,13 @@ public class Main {
 			return;
 		}
 		
-		arr = new String[N];
 		wordMask = new int[N];
 		
 		for(int i=0; i<N; i++) {
 			
 			String word = br.readLine();
-//			arr[i] = word.substring(4, word.length() - 4);
 			for(int j=4; j<word.length()-4; j++) {
 				char c = word.charAt(j);
-				
 				wordMask[i] |= (1<<(c-'a'));
 			}
 			
@@ -67,25 +59,17 @@ public class Main {
 	// 알파벳 K-5개 고르기
 	// 단어중에 해당 알파벳으로만 만들 수 있는 단어 몇갠지 고르기
 	// 걍 21C(k-5) 로 알파벳조합찾아서 몇개포함하는지 찾고, max 업데이트 
-	// set에 저장되는거: 0...25
 	
 	static void backtracking(int depth, int start, int target, int alphabets) {
 
 		if(depth == target) {
-			
 			int wordCnt=0;
-			
-			// 모든 단어에 대해..
 			for(int i=0; i<N; i++) {
-		
 				// alphabets에있는 모든 글자로 wordMask를 만들수있는지 확인
-	
 				if((wordMask[i] | alphabets) != alphabets) {
 					continue;
 				}
-
 				wordCnt++;
-				
 			}
 			if(wordCnt>maxWords) maxWords=wordCnt;
 			return;
