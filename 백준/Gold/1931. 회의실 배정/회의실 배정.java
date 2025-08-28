@@ -1,4 +1,5 @@
 
+
 import java.util.*;
 import java.io.*;
 
@@ -13,17 +14,18 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 		int N = Integer.parseInt(br.readLine());
-		List<int[]> Is = new ArrayList<>();
+		int[][] Is = new int[N][2];
 	
 		for(int i=0; i<N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int s = Integer.parseInt(st.nextToken());
 			int e = Integer.parseInt(st.nextToken());
-			Is.add(new int[] {s, e});
+			Is[i][0] = s;
+			Is[i][1] = e;
 		}
 		
 		// 끝나는시간먼저, 시작시간그다음 정렬
-		Collections.sort(Is, (o1, o2)->{
+		Arrays.sort(Is, (o1, o2)->{
 				if(o1[1] == o2[1]) {
 					return Integer.compare(o1[0], o2[0]);
 				}
