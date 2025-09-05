@@ -1,5 +1,4 @@
 
-
 import java.util.*;
 import java.io.*;
 
@@ -10,7 +9,7 @@ public class Main {
 	 * */
 	static int T;
 	static int[] arr;
-	static boolean[] visited = new boolean[10000];
+	
 	static int[] prevNum = new int[10000];
 	static char[] prevCmd = new char[10000];
 	
@@ -18,6 +17,7 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		T = Integer.parseInt(st.nextToken());
+		boolean[] visited = new boolean[10000];
 		
 		for(int test_case=0; test_case<T; test_case++) {
 			visited = new boolean[10000];
@@ -27,7 +27,7 @@ public class Main {
 			int B = Integer.parseInt(st.nextToken());
 			ArrayDeque<Integer> q = new ArrayDeque<>();
 			q.add(A);
-			
+			visited[A] = true;
 			while(!q.isEmpty()) {
 				
 				int now = q.poll();
