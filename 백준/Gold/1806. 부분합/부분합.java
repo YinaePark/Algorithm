@@ -4,47 +4,56 @@ import java.io.*;
 
 
 public class Main {
+	/*
+	 * 투포인터 
+	 * */
 	
-	public static void main(String args[]) throws Exception{
-		Scanner sc = new Scanner(System.in);
+	static int N, S;
+	static int[] num;
+	
+	
+	public static void main(String args[]) throws Exception{		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		S = Integer.parseInt(st.nextToken());
 		
-		int N, S;
+		num = new int[N];
 		
-		N = sc.nextInt();
-		S = sc.nextInt();
-		int[] arr = new int[N];
-		
+		st = new StringTokenizer(br.readLine());
 		for(int i=0; i<N; i++) {
-			arr[i] = sc.nextInt();
+			num[i] = Integer.parseInt(st.nextToken());
 		}
-		//투포인터,
-		// start ~ end-1까지
-		int sum=arr[0];
-		int start = 0;
-		int end = 1;
+		
+		int l = 0;
+		int r = 1;
+		int sum = num[0];
 		int minLen = Integer.MAX_VALUE;
 		
-		
+		// S<=sum인지를 먼저 검사해야하는이유 : 
+		// 조건만족해도 더 줄일수있는지 확인해야됨
 		while(true) {
 			
-			// S보다 크면, start를 오른쪽으로 옮김
 			if(sum>=S) {
-				minLen = Math.min(minLen, end-start);
-				sum -= arr[start];
-				start++;
+				if((r-l) < minLen) minLen = (r-l);
+				sum -= num[l];
+				l++;
 				continue;
+				
 			}
-			if(end >= N) {
-				break;
-			}
-			else {
-				sum += arr[end];
-				end++;
-			}
+			if(r>=N) break;
+			
+			sum += num[r];
+			r++;
+			
+			
 		}
+		System.out.println(minLen == Integer.MAX_VALUE ? 0 : minLen);
 		
-        System.out.println((minLen == Integer.MAX_VALUE) ? 0 : minLen);
 		
 	}
 	
+	
+	
 }
+
