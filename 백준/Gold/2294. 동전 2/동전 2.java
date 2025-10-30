@@ -1,49 +1,48 @@
 
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 
 public class Main {
+	/* 
+	 *틀린이유: INF +n 하면 오버플로우남 주의 
+	 * */
 	
-	//	dp[i] = i원을 만들수있는 동전의 최소개수
-	//	dp[n] = Min(dp[1] + dp[n-1], .... )
-	
-	static int n, k;
+	static int N, K;
+	static int[] v;
+	// dp[i] = i원 만드는 데 필요한 동전개수
 	static int[] dp;
-	static int[] price;
 	
-	public static void main(String args[]) throws Exception{
-		Scanner sc = new Scanner(System.in);
-		
-		n = sc.nextInt();
-		k = sc.nextInt();
-		dp = new int[k+1];
-		price = new int[n];
-		
-		for(int n_number = 0; n_number<n; n_number++) {
-			price[n_number] = sc.nextInt();
-			
-		}
-		
-		Arrays.fill(dp, 100001);
-		dp[0] = 0;
-		
-		// dp[j] : j라는 가격을 만들기위해 필요한 최소동전의 수
-		
-		// 모둔 동전종류 i에 대해 반복 
-		for(int i=0; i<n; i++) {
-			// j는 동전 i의 가격으로부터 만들어야하는 가격
-			for(int j=price[i]; j<=k; j++) {
-				// 만약에 i라는 동전을 추가했을 때 동전 개수가 더 줄어든다면 dp[j] 를 업데이트
-				dp[j] = Math.min(dp[j], dp[j-price[i]] + 1);
-			}
-			
-		}
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        v = new int[N];
+        dp = new int[K+1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
 
-        System.out.println(dp[k] == 100001 ? -1 : dp[k]);
-		
+        for(int i=0; i<N; i++) {
+        	st = new StringTokenizer(br.readLine());
+        	v[i] = Integer.parseInt(st.nextToken());
+        }
+        
+        dp[0] = 0;
+        // 동전종류 
+        for(int val=0; val<N; val++) {
+        	int coin = v[val];
+        	for(int i=coin; i<=K; i++) {
+        		if(dp[i-coin]!=Integer.MAX_VALUE && dp[i] > dp[i-coin]+1) {
+        			dp[i] = dp[i-coin]+1;
+        		}
+        	}
+        }
+     
+        System.out.println(dp[K] == Integer.MAX_VALUE ? -1 : dp[K]);
+        		
+        
+    }
+    
 
-	}
-	
-	
 }
+
